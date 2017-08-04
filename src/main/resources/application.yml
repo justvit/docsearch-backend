@@ -1,0 +1,10 @@
+logging:
+  level:
+    root: INFO
+
+server:
+  contextPath: /
+  port: 8080
+
+data:
+  file: data/data.json

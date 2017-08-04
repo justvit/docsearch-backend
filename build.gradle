@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+group = 'org.justvit'
+
+jar {
+    baseName = 'docsearch'
+    version =  '1.0.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(Test) {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-jetty'
+    compile 'io.springfox:springfox-swagger-ui:2.6.1'
+    compile 'io.springfox:springfox-swagger2:2.6.1'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+
+    compile "commons-logging:commons-logging:1.2"
+    compile "commons-io:commons-io:2.4"
+    compile "org.apache.commons:commons-lang3:3.5"
+    compile "log4j:log4j:1.2.17"
+    compile "com.google.guava:guava:22.0"
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
