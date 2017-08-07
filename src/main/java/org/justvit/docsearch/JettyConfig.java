@@ -31,6 +31,10 @@ public class JettyConfig {
         return new ObjectMapper();
     }
 
+    /**
+     * Allowed CORS-requests from everywhere - for dev phase only
+     * @return
+     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {

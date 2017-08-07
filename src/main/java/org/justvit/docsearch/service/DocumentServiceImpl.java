@@ -61,9 +61,7 @@ public class DocumentServiceImpl implements DocumentService {
         //** fourth, get rid of documents that contains phrases that mustn't occurr
         Map<Document, Double> onlyStrictPositives = dropDocsWithNegativePhrases(strictPositives, searchCriteria.noPhrase());
 
-        // skip docs of zero weight, then strip the rest of weights at all
         return Nlp.sortByWeight(onlyStrictPositives).stream()
-//                .filter(rdoc -> rdoc.getValue() > 0.0)
                 .map(Pair::getKey)
                 .collect(Collectors.toList());
     }
@@ -143,7 +141,7 @@ public class DocumentServiceImpl implements DocumentService {
                                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
 
             return phrase2docs.entrySet().stream()
-                            .map(e -> e.getValue())
+                            .map(Map.Entry::getValue)
                             .reduce(positives, (a,b) -> {
                                 Set<Document> docs = Sets.intersection(a.keySet(), b.keySet());
                                 return docs.stream()
