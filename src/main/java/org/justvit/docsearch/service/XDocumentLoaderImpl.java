@@ -24,7 +24,6 @@ public class XDocumentLoaderImpl implements XDocumentLoader {
     @Override
     public List<XDocument> load(Reader jsonReader) throws IOException {
         String json = String.join("\n", IOUtils.readLines(jsonReader));
-        List<XDocument> xdocs = jsonObjMapper.readValue(json, XDOC_LIST_TYPEREF);
-        return xdocs;
+        return jsonObjMapper.readValue(json, XDOC_LIST_TYPEREF);
     }
 }

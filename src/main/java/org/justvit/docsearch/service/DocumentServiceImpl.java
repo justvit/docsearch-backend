@@ -180,14 +180,14 @@ public class DocumentServiceImpl implements DocumentService {
     private void initRepo() {
         URL dataUrl = ClassLoader.getSystemClassLoader().getResource(dataFilePath);
         if (dataUrl == null){
-            throw new RuntimeException("Could not find data file: " + dataFilePath);
+            throw new DocumentServiceException("Could not find data file: " + dataFilePath);
         }
 
         List<XDocument> xdocs;
         try {
             xdocs = xdocLoader.load(new FileReader(dataUrl.getPath()));
         } catch (IOException e) {
-            throw new RuntimeException("Could not read data file: " + dataFilePath);
+            throw new DocumentServiceException("Could not read data file: " + dataFilePath, e);
         }
 
         xdocs.forEach(xdoc -> this.add(xdocConverter.convert(xdoc)));

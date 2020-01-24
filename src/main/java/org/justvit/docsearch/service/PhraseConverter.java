@@ -1,7 +1,6 @@
 package org.justvit.docsearch.service;
 
 import org.justvit.docsearch.model.Phrase;
-import org.justvit.docsearch.model.Token;
 
 import java.util.List;
 

@@ -39,39 +39,46 @@ public class SearchRequestParserImpl implements SearchRequestParser {
     @Override
     public SearchCriteria parse(String request) throws SearchRequestParsingException {
         SearchCriteria criteria = new SearchCriteria();
-        Scanner scanner = new Scanner(request).useDelimiter(DELIMITER_PATTERN);
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(request).useDelimiter(DELIMITER_PATTERN);
 
-        while (scanner.hasNext()){
-            String piece = scanner.next();
+            while (scanner.hasNext()) {
+                String piece = scanner.next();
 
-            if (piece.length() < 1) continue;
+                if (piece.length() < 1) continue;
 
-            if (SIMPLE_PATTERN.matcher(piece).matches()) {
-                List<Phrase> ps = phraseConverter.parseText(piece);
-                if (isPositive){
-                    criteria.appendAnyWord(ps);
+                if (SIMPLE_PATTERN.matcher(piece).matches()) {
+                    List<Phrase> ps = phraseConverter.parseText(piece);
+                    if (isPositive) {
+                        criteria.appendAnyWord(ps);
+                    } else {
+                        criteria.appendNoWord(ps);
+                        isPositive = true;
+                    }
+                } else if (piece.equals(MINUS)) {
+                    isPositive = false;
+                } else if (piece.startsWith(QUOTE) && piece.endsWith(QUOTE)) {
+                    List<Phrase> ps = phraseConverter.parseText(piece.replaceAll(QUOTE, EMPTY));
+                    if (isPositive) {
+                        criteria.appendAnyPhrase(ps);
+                    } else {
+                        criteria.appendNoPhrase(ps);
+                        isPositive = true;
+                    }
                 } else {
-                    criteria.appendNoWord(ps);
-                    isPositive = true;
+                    throw new SearchRequestParsingException("error in the search request: " + request);
                 }
-            } else if (piece.equals(MINUS)){
-                isPositive = false;
-            } else if (piece.startsWith(QUOTE) && piece.endsWith(QUOTE)) {
-                List<Phrase> ps = phraseConverter.parseText(piece.replaceAll(QUOTE, EMPTY));
-                if (isPositive) {
-                    criteria.appendAnyPhrase(ps);
-                } else {
-                    criteria.appendNoPhrase(ps);
-                    isPositive = true;
-                }
-            } else {
-                throw new SearchRequestParsingException("error in the search request: " + request);
+            }
+            if (!isPositive) {
+                throw new SearchRequestParsingException("search request ended unexpectedly: " + request);
+            }
+        } finally {
+            if (scanner != null){
+                scanner.close();
             }
         }
-        if (!isPositive) {
-            throw new SearchRequestParsingException("search request ended unexpectedly: " + request);
-        }
-
+        
         return criteria;
     }
 }

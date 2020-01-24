@@ -44,11 +44,9 @@ public class DocumentController {
 
         List<Document> docs = documentService.search(request);
 
-        List<XDocument> xdocs = docs.stream()
+        return docs.stream()
                 .map(doc -> documentConverter.convert(doc))
                 .collect(Collectors.toList());
-
-        return xdocs;
     }
 }
 

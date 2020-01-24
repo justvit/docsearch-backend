@@ -173,7 +173,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
         // find docs that contain the words
         Set<Document> relatedDocs = qwords.stream()
                 .map(w -> word2docs.getOrDefault(w, Collections.emptySet()))
-                .reduce(Collections.emptySet(), (a, b) -> Sets.union(a, b));
+                .reduce(Collections.emptySet(), Sets::union);
 
         // now, make vectors from the query for every related doc
         Map<String, Double> queryVector = qwords.stream()

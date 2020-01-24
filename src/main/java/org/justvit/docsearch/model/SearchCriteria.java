@@ -32,17 +32,21 @@ public class SearchCriteria {
      */
     private List<Phrase> noPhrase = new ArrayList<>();
 
+    private List<Token> split(Collection<Phrase> phrases) {
+        return phrases.stream()
+                .map(Phrase::tokens)
+                .reduce(new ArrayList<>(), (a, b) -> {
+                    a.addAll(b);
+                    return a;
+                });
+    }
+
     public List<Token> anyWord() {
         return anyWord;
     }
 
     public SearchCriteria appendAnyWord(Collection<Phrase> phrases) {
-        List<Token> newTokens = phrases.stream()
-                .map(p -> p.tokens())
-                .reduce(new ArrayList<>(), (a, b) -> {
-                    a.addAll(b);
-                    return a;
-                });
+        List<Token> newTokens = split(phrases);
         anyWord = Lists.newArrayList(Iterables.concat(anyWord, newTokens));
         return this;
     }
@@ -61,8 +65,8 @@ public class SearchCriteria {
         return this;
     }
 
-    public SearchCriteria appendAnyPhrase(List<Phrase> ps) {
-        anyPhrase.addAll(ps);
+    public SearchCriteria appendAnyPhrase(List<Phrase> phrases) {
+        anyPhrase.addAll(phrases);
         return this;
     }
 
@@ -76,12 +80,7 @@ public class SearchCriteria {
     }
 
     public SearchCriteria appendNoWord(Collection<Phrase> ps) {
-        List<Token> newTokens = ps.stream()
-                .map(p -> p.tokens())
-                .reduce(new ArrayList<>(), (a, b) -> {
-                    a.addAll(b);
-                    return a;
-                });
+        List<Token> newTokens = split(ps);
 
         noWord = Lists.newArrayList(Iterables.concat(noWord, newTokens));
         return this;

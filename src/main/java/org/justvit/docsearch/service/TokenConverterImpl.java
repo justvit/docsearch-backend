@@ -45,7 +45,7 @@ public class TokenConverterImpl implements TokenConverter {
         Preconditions.checkNotNull(tokens);
 
         return tokens.stream()
-                .map(t -> t.getBody())
+                .map(Token::getBody)
                 .reduce(EMPTY_STRING, (a, b) -> a.concat(b));
     }
 }
